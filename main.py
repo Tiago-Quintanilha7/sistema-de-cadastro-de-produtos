@@ -9,22 +9,6 @@ if os.path.exists("produtos.json"):
     with open("produtos.json", "r") as f:
         produtos = json.load(f)
 
-
-# Função para excluir por código
-def abrir_tela_excluir_codigo():
-    janela_excluir = tk.Toplevel(janela)
-    janela_excluir.title('Excluir produto por código')
-
-    tk.Label(janela_excluir, text='Digite o código do produto:').pack(padx=10, pady=(10, 5))
-    codigo_entry = tk.Entry(janela_excluir)
-    codigo_entry.pack(padx=10, pady=5)
-
-    # Pressionar Enter no campo também aciona a exclusão
-    codigo_entry.bind("<Return>", lambda event: excluir_por_codigo(codigo_entry))
-
-    tk.Button(janela_excluir, text='Excluir', command=lambda: excluir_por_codigo(codigo_entry)).pack(pady=10)
-
-
 # Função para consultar produto por nome
 def consultar_por_nome():
     nome_buscado = busca_nome_entry.get().strip()
@@ -41,7 +25,6 @@ def consultar_por_nome():
     for p in encontrados:
         info = f"Nome: {p['nome']}, Código: {p['codigo']}, Preço: {p['preco']}, Quantidade: {p['quantidade']}"
         tk.Label(janela_consulta, text=info).pack(anchor='w')
-
 
 # Função para consultar produto por código
 def consultar_por_codigo():
@@ -60,37 +43,10 @@ def consultar_por_codigo():
         info = f"Nome: {p['nome']}, Código: {p['codigo']}, Preço: {p['preco']}, Quantidade: {p['quantidade']}"
         tk.Label(janela_consulta, text=info).pack(anchor='w')
 
-
-# Função para excluir produto (recebe o entry de código como argumento)
-def excluir_por_codigo(entry_codigo):
-    codigo_buscado = entry_codigo.get().strip()
-
-    if not codigo_buscado:
-        messagebox.showwarning('Erro', 'Digite um código válido para excluir')
-        return
-
-    produto_encontrado = next((p for p in produtos if p['codigo'] == codigo_buscado), None)
-
-    if not produto_encontrado:
-        messagebox.showinfo('Não encontrado', 'Nenhum produto encontrado com esse código')
-        return
-
-    confirmar = messagebox.askyesno('Confirmação', f"Deseja excluir o produto '{produto_encontrado['nome']}'?")
-    if not confirmar:
-        return
-
-    produtos.remove(produto_encontrado)
-
-    with open('produtos.json', 'w') as f:
-        json.dump(produtos, f, indent=4)
-
-    messagebox.showinfo('Sucesso', 'Produto excluído com sucesso')
-
-
 # Função para abrir a janela de cadastro
 def abrir_tela_cadastro():
     janela_cadastro = tk.Toplevel(janela)
-    janela_cadastro.title('Cadastro de Produtos')
+    janela_cadastro.title('Cadastro de produtos')
 
     tk.Label(janela_cadastro, text='Nome do Produto:').grid(row=0, column=0, padx=5, pady=5)
     nome_entry = tk.Entry(janela_cadastro)
@@ -144,6 +100,7 @@ def abrir_tela_cadastro():
 
         messagebox.showinfo("Sucesso", "Produto cadastrado com sucesso!")
 
+        # Limpar campos após salvar
         nome_entry.delete(0, tk.END)
         codigo_entry.delete(0, tk.END)
         preco_entry.delete(0, tk.END)
@@ -151,29 +108,29 @@ def abrir_tela_cadastro():
 
     tk.Button(janela_cadastro, text="Salvar Produto", command=cadastrar_produto).grid(row=4, column=0, columnspan=2, pady=10)
 
-    # Botão para excluir por código
-    tk.Button(janela_cadastro, text='Excluir por Código', command=abrir_tela_excluir_codigo).grid(row=5, column=0, columnspan=2, pady=5)
+
+
+
+
+
 
 
 # Criar a janela principal (Tela de Consulta)
 janela = tk.Tk()
-janela.title("CONTROLE DE ESTOQUE")
-janela.geometry('300x220')
-janela.config(bg='lightblue')
-janela.resizable(False, False)
+janela.title("SISTEMA DE CONTROLE DE PRODUTOS")
+janela.geometry('400x300')
+janela.config(bg='lightgreen')
 
-tk.Label(janela, text="Buscar Produto por Nome:", bg='lightblue').pack(pady=(10, 0))
-busca_nome_entry = tk.Entry(janela, width=15)
+tk.Label(janela, text="Buscar Produto por Nome:").pack(pady=(10, 0))
+busca_nome_entry = tk.Entry(janela)
 busca_nome_entry.pack(pady=(0, 0))
-busca_nome_entry.bind("<Return>", lambda event: consultar_por_nome())  # Enter ativa busca por nome
-tk.Button(janela, text="Consultar por Nome", command=consultar_por_nome, bg='#98FB98').pack(pady=5)
+tk.Button(janela, text="Consultar por Nome", command=consultar_por_nome).pack(pady=5)
 
-tk.Label(janela, text="Buscar Produto por Código:", bg='lightblue').pack(pady=(10, 0))
-busca_codigo_entry = tk.Entry(janela, width=10)
+tk.Label(janela, text="Buscar Produto por Código:").pack(pady=(10, 0))
+busca_codigo_entry = tk.Entry(janela, width=20)
 busca_codigo_entry.pack(pady=(0, 0))
-busca_codigo_entry.bind("<Return>", lambda event: consultar_por_codigo())  # Enter ativa busca por código
-tk.Button(janela, text="Consultar por Codigo", command=consultar_por_codigo, bg='#98FB98').pack(pady=5)
+tk.Button(janela, text="Consultar por Codigo", command=consultar_por_codigo).pack(pady=5)
 
-tk.Button(janela, text="Cadastrar ou Remover Produto", command=abrir_tela_cadastro, bg='#9370DB').pack(pady=10)
+tk.Button(janela, text="Cadastrar ou Remover Produto", command=abrir_tela_cadastro).pack(pady=10)
 
 janela.mainloop()
